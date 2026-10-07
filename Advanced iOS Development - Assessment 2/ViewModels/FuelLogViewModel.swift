@@ -43,6 +43,27 @@ class FuelLogViewModel: ObservableObject {
         loadEntries()
     }
 
+    func importPendingEntries() {
+        let defaults = UserDefaults(suiteName: "group.com.oscarcosta.drivesocial")
+        guard let pending = defaults?.array(forKey: "pendingFuelEntries") as? [[String: Any]],
+              !pending.isEmpty else { return }
+
+        for dict in pending {
+            guard let litres = dict["litres"] as? Double,
+                  let price = dict["pricePerLitre"] as? Double,
+                  let timestamp = dict["date"] as? Double else { continue }
+            let date = Date(timeIntervalSince1970: timestamp)
+            let notes = dict["notes"] as? String ?? ""
+            let lastOdometer = entries.first?.odometer ?? 0
+            try? logUseCase.execute(vehicleID: Self.vehicleID, date: date,
+                                    odometer: lastOdometer + 1,
+                                    litres: litres, pricePerLitre: price, notes: notes)
+        }
+
+        defaults?.removeObject(forKey: "pendingFuelEntries")
+        loadEntries()
+    }
+
     private func loadEntries() {
         entries = (try? repository.fetchEntries(for: Self.vehicleID)) ?? []
         stats = statsUseCase.execute(entries: entries)

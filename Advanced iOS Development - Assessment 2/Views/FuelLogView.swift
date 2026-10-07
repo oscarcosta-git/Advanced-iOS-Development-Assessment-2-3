@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct FuelLogView: View {
-    @StateObject private var vm = FuelLogViewModel()
+    @EnvironmentObject private var vm: FuelLogViewModel
 
     var body: some View {
         NavigationStack {
@@ -150,4 +150,5 @@ struct AddFuelView: View {
 
 #Preview {
     FuelLogView()
+        .environmentObject(FuelLogViewModel())
 }
