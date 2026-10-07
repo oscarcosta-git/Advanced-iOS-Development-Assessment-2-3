@@ -11,6 +11,8 @@ struct ContentView: View {
                 .tabItem { Label("My Car", systemImage: "wrench.and.screwdriver.fill") }
             FindMechanicView()
                 .tabItem { Label("Find Mechanic", systemImage: "magnifyingglass") }
+            FuelLogView()
+                .tabItem { Label("Fuel Log", systemImage: "fuelpump.fill") }
         }
     }
 }
