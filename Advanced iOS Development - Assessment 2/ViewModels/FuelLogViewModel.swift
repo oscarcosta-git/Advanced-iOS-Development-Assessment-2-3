@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import CoreData
+import WidgetKit
 
 class FuelLogViewModel: ObservableObject {
     @Published var entries: [FuelEntry] = []
@@ -15,6 +16,7 @@ class FuelLogViewModel: ObservableObject {
     private let repository: FuelRepositoryProtocol
     private let logUseCase: LogFuelUseCase
     private let statsUseCase = CalculateCostPerKmUseCase()
+    private let sharedDefaults = UserDefaults(suiteName: "group.com.oscarcosta.drivesocial")
 
     init(repository: FuelRepositoryProtocol = CoreDataFuelRepository()) {
         self.repository = repository
@@ -44,6 +46,18 @@ class FuelLogViewModel: ObservableObject {
     private func loadEntries() {
         entries = (try? repository.fetchEntries(for: Self.vehicleID)) ?? []
         stats = statsUseCase.execute(entries: entries)
+        writeSharedDefaults()
+    }
+
+    private func writeSharedDefaults() {
+        guard let last = entries.first else { return }
+        sharedDefaults?.set(last.date, forKey: "lastFillDate")
+        sharedDefaults?.set(last.litres, forKey: "lastFillLitres")
+        sharedDefaults?.set(last.totalCost, forKey: "lastFillCost")
+        if let costPerKm = stats?.costPerKm {
+            sharedDefaults?.set(costPerKm, forKey: "costPerKm")
+        }
+        WidgetCenter.shared.reloadTimelines(ofKind: "DriveSocialWidget")
     }
 
     private func ensureVehicleExists() {
