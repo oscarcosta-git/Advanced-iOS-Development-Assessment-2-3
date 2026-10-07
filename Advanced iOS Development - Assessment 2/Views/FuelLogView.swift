@@ -19,6 +19,22 @@ struct FuelLogView: View {
                     }
                 }
 
+                Section {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "square.and.arrow.up.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(.blue)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Log from a receipt")
+                                .font(.subheadline.bold())
+                            Text("In Photos, Files, or Safari — tap Share, then choose Drive Social to log a fill-up directly from your receipt.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+
                 Section("Fill-ups") {
                     if vm.entries.isEmpty {
                         ContentUnavailableView(

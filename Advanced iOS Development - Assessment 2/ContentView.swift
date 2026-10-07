@@ -13,6 +13,8 @@ struct ContentView: View {
                 .tabItem { Label("Find Mechanic", systemImage: "magnifyingglass") }
             FuelLogView()
                 .tabItem { Label("Fuel Log", systemImage: "fuelpump.fill") }
+            CheapFuelView()
+                .tabItem { Label("Cheap Fuel", systemImage: "dollarsign.circle.fill") }
         }
     }
 }
